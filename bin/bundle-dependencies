@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -o errexit
+set -o nounset
+# set -o xtrace
+set -o pipefail
+
+eval "$(parse-options help:h -- "$@")"
+
+if [[ $help ]]
+then
+	cat '/usr/share/bash-common-bundle-dependencies/help/bundle-dependencies'
+else
+	echo 'Hello World!'
+fi
