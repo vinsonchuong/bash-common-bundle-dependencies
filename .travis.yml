@@ -1,6 +1,10 @@
 ---
 sudo: required
 dist: trusty
+addons:
+  apt:
+    packages:
+      - realpath
 language: bash
 before_install:
 - export DISPLAY=:99.0

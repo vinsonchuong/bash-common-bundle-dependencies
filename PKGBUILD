@@ -1,1 +1,1 @@
-depends=('bash-common-parse-options')
+depends=('bash-common-environment' 'bash-common-parse-options')

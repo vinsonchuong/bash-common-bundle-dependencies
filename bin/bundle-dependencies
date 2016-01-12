@@ -4,11 +4,28 @@ set -o nounset
 # set -o xtrace
 set -o pipefail
 
+eval "$(environment)"
 eval "$(parse-options help:h -- "$@")"
 
 if [[ $help ]]
 then
-	cat '/usr/share/bash-common-bundle-dependencies/help/bundle-dependencies'
-else
-	echo 'Hello World!'
+	cat "$HELP"
+	exit
 fi
+
+DEFAULT_DEPENDS=()
+DEFAULT_OPTDEPENDS=()
+DEFAULT_MAKEDEPENDS=('clidoc')
+DEFAULT_CHECKDEPENDS=('bats-git')
+eval "$(cat 'PKGBUILD')"
+depends=("${depends[@]:-${DEFAULT_DEPENDS[@]}}")
+optdepends=("${optdepends[@]:-${DEFAULT_OPTDEPENDS[@]}}")
+makedepends=("${makedepends[@]:-${DEFAULT_MAKEDEPENDS[@]}}")
+checkdepends=("${checkdepends[@]:-${DEFAULT_CHECKDEPENDS[@]}}")
+
+for dependency in "${depends[@]}" "${optdepends[@]}" "${makedepends[@]}" "${checkdepends[@]}"
+do
+	echo "Bundling: ${dependency}"
+done
+
+# git clone 'ssh://aur@aur.archlinux.org/packageName'
