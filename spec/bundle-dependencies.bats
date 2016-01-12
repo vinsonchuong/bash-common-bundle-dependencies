@@ -2,10 +2,24 @@
 
 setup() {
 	export PACKAGE_DIR="${BATS_TMPDIR}/package"
+	export STUB_DIR="${BATS_TMPDIR}/stub"
+	export PATH="$STUB_DIR:$PATH"
 }
 
 teardown() {
-	rm -rf "$PACKAGE_DIR"
+	rm -rf "$PACKAGE_DIR" "$STUB_DIR"
+}
+
+stub() {
+	mkdir -p "$STUB_DIR"
+	command=$1
+	shift
+	{
+		echo "if [[ "$*" = \$* ]]; then" 
+		cat
+		echo 'fi'
+	} >> "${STUB_DIR}/${command}"
+	chmod +x "${STUB_DIR}/${command}"
 }
 
 pkgbuild() {
