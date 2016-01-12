@@ -10,6 +10,8 @@ before_install:
 - export DISPLAY=:99.0
 - Xvfb :99 -ac -screen 0 1024x768x8 &>/dev/null &
 install:
-- git clone https://github.com/sstephenson/bats.git
-- export PATH=$PWD/bin:$PWD/bats/bin:$PATH
+- git clone https://github.com/vinsonchuong/bash-common-environment
+- git clone https://github.com/vinsonchuong/bash-common-parse-options
+- git clone https://github.com/sstephenson/bats
+- export PATH=$PWD/bin:$PWD/bash-common-environment/bin:$PWD/bash-common-parse-options/bin:$PWD/bats/bin:$PATH
 script: bats spec

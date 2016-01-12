@@ -23,7 +23,6 @@ pkgbuild() {
 
 	cd "$PACKAGE_DIR"
 	run bundle-dependencies
-	echo "$output"
 	[[ $status = 0 ]]
 	[[ $output = *'Bundling: dependency1'* ]]
 	[[ $output = *'Bundling: dependency2'* ]]
