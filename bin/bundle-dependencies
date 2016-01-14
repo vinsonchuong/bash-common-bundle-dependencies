@@ -13,19 +13,22 @@ then
 	exit
 fi
 
-DEFAULT_DEPENDS=()
-DEFAULT_OPTDEPENDS=()
-DEFAULT_MAKEDEPENDS=('clidoc')
-DEFAULT_CHECKDEPENDS=('bats-git')
-eval "$(cat 'PKGBUILD')"
-depends=("${depends[@]:-${DEFAULT_DEPENDS[@]}}")
-optdepends=("${optdepends[@]:-${DEFAULT_OPTDEPENDS[@]}}")
-makedepends=("${makedepends[@]:-${DEFAULT_MAKEDEPENDS[@]}}")
-checkdepends=("${checkdepends[@]:-${DEFAULT_CHECKDEPENDS[@]}}")
+declare -A dependencies
 
-for dependency in "${depends[@]}" "${optdepends[@]}" "${makedepends[@]}" "${checkdepends[@]}"
-do
-	echo "Bundling: ${dependency}"
-done
+parse() {
+	depends=()
+	optdepends=()
+	makedepends=()
+	checkdepends=()
+	eval "$(cat)"
+	for dependency in "${depends[@]+"${depends[@]}"}" "${optdepends[@]+"${optdepends[@]}"}" "${makedepends[@]+"${makedepends[@]}"}" "${checkdepends[@]+"${checkdepends[@]}"}"
+	do
+		echo "Bundling: ${dependency}"
+		curl "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=${dependency}" | parse
+	done
+}
 
-# git clone 'ssh://aur@aur.archlinux.org/packageName'
+cat - 'PKGBUILD' <<EOF | parse
+makedepends=('clidoc')
+checkdepends=('bats-git')
+EOF

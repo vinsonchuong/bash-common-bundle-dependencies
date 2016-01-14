@@ -15,7 +15,7 @@ stub() {
 	command=$1
 	shift
 	{
-		echo "if [[ "$*" = \$* ]]; then" 
+		echo "if [[ '$*' = \$* ]]; then"
 		cat
 		echo 'fi'
 	} >> "${STUB_DIR}/${command}"
@@ -27,32 +27,57 @@ pkgbuild() {
 	cat > "${PACKAGE_DIR}/PKGBUILD"
 }
 
-@test 'lists all of the immediate dependencies of the project' {
-  pkgbuild <<-EOF
-	depends=('dependency1' 'dependency2')
-	optdepends=('opt1' 'opt2')
-	makedepends=('make1' 'make2')
-	checkdepends=('check1' 'check2')
+@test 'recursively lists the dependencies of a package' {
+  pkgbuild <<-BASH
+	depends=('p1')
+	BASH
+
+	stub curl 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=p1' <<-BASH
+	cat <<-EOF
+	depends=('p2' 'p3')
 	EOF
+	BASH
+
+	stub curl 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=p2' <<-BASH
+	cat <<-EOF
+	depends=('p4')
+	EOF
+	BASH
+
+	stub curl 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=p3' <<-BASH
+	cat <<-EOF
+	depends=('p4')
+	EOF
+	BASH
+
+	stub curl 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=p4' <<-BASH
+	cat <<-EOF
+	depends=()
+	EOF
+	BASH
 
 	cd "$PACKAGE_DIR"
 	run bundle-dependencies
 	[[ $status = 0 ]]
-	[[ $output = *'Bundling: dependency1'* ]]
-	[[ $output = *'Bundling: dependency2'* ]]
-	[[ $output = *'Bundling: opt1'* ]]
-	[[ $output = *'Bundling: opt2'* ]]
-	[[ $output = *'Bundling: make1'* ]]
-	[[ $output = *'Bundling: make2'* ]]
-	[[ $output = *'Bundling: check1'* ]]
-	[[ $output = *'Bundling: check2'* ]]
+	[[ $output = *'Bundling: p1'* ]]
+	[[ $output = *'Bundling: p2'* ]]
+	[[ $output = *'Bundling: p3'* ]]
+	[[ $output = *'Bundling: p4'* ]]
 }
 
 @test 'has default makedepends and checkdepends' {
-  pkgbuild <<-EOF
+	pkgbuild <<-EOF
 	depends=('dependency1' 'dependency2')
 	optdepends=('opt1' 'opt2')
 	EOF
+
+	stub curl 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=clidoc' <<-BASH
+	echo
+	BASH
+
+	stub curl 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=bats-git' <<-BASH
+	echo
+	BASH
 
 	cd "$PACKAGE_DIR"
 	run bundle-dependencies
