@@ -63,6 +63,11 @@ pkgbuild() {
 	[[ $output = *'Bundling: p2'* ]]
 	[[ $output = *'Bundling: p3'* ]]
 	[[ $output = *'Bundling: p4'* ]]
+
+	[[ $output != *'p1'*'p1'* ]]
+	[[ $output != *'p2'*'p2'* ]]
+	[[ $output != *'p3'*'p3'* ]]
+	[[ $output != *'p4'*'p4'* ]]
 }
 
 @test 'has default makedepends and checkdepends' {
