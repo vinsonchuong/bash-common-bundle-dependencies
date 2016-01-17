@@ -7,6 +7,12 @@ set -o pipefail
 declare -A dependencies
 dependencies['bash']='seen'
 dependencies['git']='seen'
+dependencies['postgresql']='seen'
+dependencies['perl']='seen'
+dependencies['python']='seen'
+dependencies['ruby']='seen'
+dependencies['nodejs']='seen'
+dependencies['npm']='seen'
 
 queue=('bats-git')
 
