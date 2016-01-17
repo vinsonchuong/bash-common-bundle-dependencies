@@ -105,12 +105,7 @@ pkgbuild() {
 	run bundle-dependencies
 
 	[[ -d "${PACKAGE_DIR}/packages/bin" ]]
-
-	run "${PACKAGE_DIR}/packages/bin/environment" --help
-	echo "$output"
-	[[ $status = 0 ]]
-	[[ $output = *'sets common environment variables for a Bash library'* ]]
-
-	[[ -x "${PACKAGE_DIR}/packages/bin/parse-options" ]]
 	[[ -x "${PACKAGE_DIR}/packages/bin/bats" ]]
+	[[ -x "${PACKAGE_DIR}/packages/bin/environment" ]]
+	[[ -x "${PACKAGE_DIR}/packages/bin/parse-options" ]]
 }
