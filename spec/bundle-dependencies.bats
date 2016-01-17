@@ -27,33 +27,48 @@ pkgbuild() {
 	cat > "${PACKAGE_DIR}/PKGBUILD"
 }
 
-@test 'recursively lists the dependencies of a package' {
+@test 'recursively resolves the dependencies of a package' {
   pkgbuild <<-BASH
 	depends=('p1')
 	BASH
 
-	stub curl 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=p1' <<-BASH
-	cat <<-EOF
-	depends=('p2' 'p3')
-	EOF
-	BASH
-
-	stub curl 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=p2' <<-BASH
-	cat <<-EOF
-	depends=('p4')
-	EOF
-	BASH
-
-	stub curl 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=p3' <<-BASH
-	cat <<-EOF
-	depends=('p4')
-	EOF
-	BASH
-
-	stub curl 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=p4' <<-BASH
+	stub curl -sfL 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=bats-git' <<-BASH
 	cat <<-EOF
 	depends=()
+	source=('https://example.com/package.tar.gz')
 	EOF
+	BASH
+
+	stub curl -sfL 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=p1' <<-BASH
+	cat <<-EOF
+	depends=('p2' 'p3')
+	source=('https://example.com/package.tar.gz')
+	EOF
+	BASH
+
+	stub curl -sfL 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=p2' <<-BASH
+	cat <<-EOF
+	depends=('p4')
+	source=('https://example.com/package.tar.gz')
+	EOF
+	BASH
+
+	stub curl -sfL 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=p3' <<-BASH
+	cat <<-EOF
+	depends=('p4')
+	source=('https://example.com/package.tar.gz')
+	EOF
+	BASH
+
+	stub curl -sfL 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=p4' <<-BASH
+	cat <<-EOF
+	depends=()
+	source=('https://example.com/package.tar.gz')
+	EOF
+	BASH
+
+	stub curl -sfL 'https://example.com/package.tar.gz' <<-BASH
+	tar -czT /dev/null
 	BASH
 
 	cd "$PACKAGE_DIR"
@@ -77,7 +92,24 @@ pkgbuild() {
 
 	cd "$PACKAGE_DIR"
 	run bundle-dependencies
-  echo "$output"
 	[[ $status = 0 ]]
 	[[ $output = *'Bundling: bats-git'* ]]
+}
+
+@test 'installs resolved dependencies' {
+	pkgbuild <<-EOF
+	depends=('bash-common-environment')
+	EOF
+
+	cd "$PACKAGE_DIR"
+	run bundle-dependencies
+
+	[[ -d "${PACKAGE_DIR}/packages/bin" ]]
+
+	run "${PACKAGE_DIR}/packages/bin/environment" --help
+	[[ $status = 0 ]]
+	[[ $output = *'sets common environment variables for a Bash library'* ]]
+
+	[[ -x "${PACKAGE_DIR}/packages/bin/parse-options" ]]
+	[[ -x "${PACKAGE_DIR}/packages/bin/bats" ]]
 }

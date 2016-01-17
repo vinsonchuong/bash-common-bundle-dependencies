@@ -22,6 +22,9 @@ queue=('bats-git')
 eval "$(cat 'PKGBUILD')"
 queue=("${queue[@]+"${queue[@]}"}" "${depends[@]+"${depends[@]}"}" "${optdepends[@]+"${optdepends[@]}"}" "${makedepends[@]+"${makedepends[@]}"}" "${checkdepends[@]+"${checkdepends[@]}"}")
 
+mkdir 'packages'
+cd 'packages'
+
 while [[ ${#queue[@]} -gt 0 ]]
 do
 	dependency=${queue[0]}
@@ -33,12 +36,28 @@ do
 	fi
 	dependencies["$dependency"]='seen'
 
-	echo "Bundling: ${dependency}"
-
 	depends=()
 	optdepends=()
-	makedepends=()
-	checkdepends=()
-	eval "$(curl "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=${dependency}")"
-	queue=("${queue[@]+"${queue[@]}"}" "${depends[@]+"${depends[@]}"}" "${optdepends[@]+"${optdepends[@]}"}" "${makedepends[@]+"${makedepends[@]}"}" "${checkdepends[@]+"${checkdepends[@]}"}")
+	eval "$(curl -sfL "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=${dependency}")"
+
+	echo "Bundling: ${dependency}"
+
+	url="${source[0]}"
+	if [[ $url = 'git+'* ]]
+	then
+		git clone -q "${url#*+}"
+	fi
+	if [[ $url = 'http'* ]]
+	then
+		curl -sfL "$url" | tar -xz
+	fi
+
+	queue=("${queue[@]+"${queue[@]}"}" "${depends[@]+"${depends[@]}"}" "${optdepends[@]+"${optdepends[@]}"}")
+done
+
+echo 'Linking bin files to packages/bin'
+mkdir 'bin'
+for bin in $(ls */bin/*)
+do
+	ln -s "${PWD}/${bin}" 'bin'
 done

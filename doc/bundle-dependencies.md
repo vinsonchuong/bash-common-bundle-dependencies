@@ -9,9 +9,8 @@
 in the current directory.
 
 All of the packages listed in the `depends`, `optdepends`, `makedepends`, and
-`checkdepends` keys will be installed. If a `makedepends` array is not
-provided, it will be assumed to be `makedepends=('clidoc')`. If a 'checkdepends'
-array is not provided, it will be assumed to be `checkdepends=('bats-git')`
+`checkdepends` keys will be installed. In addition, the `bats-git` package will
+also be bundled.
 
 Packages will be installed as subdirectories of `packages`. Symlinks to their
 executable files will be created in `packages/bin`.
