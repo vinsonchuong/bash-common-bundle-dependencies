@@ -107,6 +107,7 @@ pkgbuild() {
 	[[ -d "${PACKAGE_DIR}/packages/bin" ]]
 
 	run "${PACKAGE_DIR}/packages/bin/environment" --help
+	echo "$output"
 	[[ $status = 0 ]]
 	[[ $output = *'sets common environment variables for a Bash library'* ]]
 
