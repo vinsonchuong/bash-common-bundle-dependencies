@@ -4,15 +4,6 @@ set -o nounset
 # set -o xtrace
 set -o pipefail
 
-eval "$(environment)"
-eval "$(parse-options help:h -- "$@")"
-
-if [[ $help ]]
-then
-	cat "$HELP"
-	exit
-fi
-
 declare -A dependencies
 dependencies['bash']='seen'
 dependencies['git']='seen'
