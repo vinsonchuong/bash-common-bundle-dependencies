@@ -70,23 +70,14 @@ pkgbuild() {
 	[[ $output != *'p4'*'p4'* ]]
 }
 
-@test 'has default makedepends and checkdepends' {
+@test 'bundles bats-git by default' {
 	pkgbuild <<-EOF
-	depends=('dependency1' 'dependency2')
-	optdepends=('opt1' 'opt2')
+	depends=()
 	EOF
-
-	stub curl 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=clidoc' <<-BASH
-	echo
-	BASH
-
-	stub curl 'https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=bats-git' <<-BASH
-	echo
-	BASH
 
 	cd "$PACKAGE_DIR"
 	run bundle-dependencies
+  echo "$output"
 	[[ $status = 0 ]]
-	[[ $output = *'Bundling: clidoc'* ]]
 	[[ $output = *'Bundling: bats-git'* ]]
 }
