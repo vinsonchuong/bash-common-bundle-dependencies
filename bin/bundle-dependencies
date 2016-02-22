@@ -14,6 +14,7 @@ dependencies['python']='seen'
 dependencies['ruby']='seen'
 dependencies['nodejs']='seen'
 dependencies['npm']='seen'
+dependencies['clidoc']='seen'
 
 queue=('bats-git')
 
@@ -57,5 +58,5 @@ echo 'Linking bin files to packages/bin'
 mkdir 'bin'
 for bin in $(ls */bin/*)
 do
-	ln -s "${PWD}/${bin}" 'bin'
+	ln -s "../$bin" 'bin'
 done
