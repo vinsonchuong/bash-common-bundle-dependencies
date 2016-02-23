@@ -13,6 +13,7 @@ teardown() {
 	[[ $status = 0 ]]
 
 	[[ -d "${BATS_TMPDIR}/prototypical/standalone/bin" ]]
+	ls -lha "${BATS_TMPDIR}/prototypical/standalone/bin"
 
 	export PATH="${BATS_TMPDIR}/prototypical/standalone/bin:$PATH"
 
