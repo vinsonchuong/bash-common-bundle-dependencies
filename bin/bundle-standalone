@@ -15,6 +15,7 @@ echo "depends=('${PKGNAME}')" > 'PKGBUILD'
 bundle-dependencies
 
 mkdir 'bin'
+echo "PKGINFO $PKGNAME $PKGVER"
 for bin in $(ls "packages/${PKGNAME}-${PKGVER}/bin/"*)
 do
 	ln -s "../$bin" 'bin'
