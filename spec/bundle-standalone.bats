@@ -17,6 +17,7 @@ teardown() {
 	export PATH="${BATS_TMPDIR}/prototypical/standalone/bin:$PATH"
 
 	run prototypical base 'project'
+	echo "$output"
 	[[ $status = 0 ]]
 	[[ -f "${BATS_TMPDIR}/prototypical/project/LICENSE" ]]
 
