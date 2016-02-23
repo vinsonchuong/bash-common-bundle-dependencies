@@ -51,6 +51,11 @@ do
 		curl -sfL "$url" | tar -xz
 	fi
 
+	if type clidoc &> /dev/null && type build &> /dev/null
+	then
+		(srcdir="$PWD" build)
+	fi
+
 	queue=("${queue[@]+"${queue[@]}"}" "${depends[@]+"${depends[@]}"}" "${optdepends[@]+"${optdepends[@]}"}")
 done
 

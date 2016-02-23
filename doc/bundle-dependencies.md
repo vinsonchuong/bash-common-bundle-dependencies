@@ -15,6 +15,9 @@ also be bundled.
 Packages will be installed as subdirectories of `packages`. Symlinks to their
 executable files will be created in `packages/bin`.
 
+If `clidoc` is installed, the `build` function of each package will also be
+run.
+
 ## OPTIONS
 * -h, --help:
   Show help text and exit.

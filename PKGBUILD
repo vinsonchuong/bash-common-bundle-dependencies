@@ -1,1 +1,1 @@
-depends=('git')
+depends=('git' 'clidoc')

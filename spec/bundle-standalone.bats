@@ -15,7 +15,12 @@ teardown() {
 	[[ -d "${BATS_TMPDIR}/prototypical/standalone/bin" ]]
 
 	export PATH="${BATS_TMPDIR}/prototypical/standalone/bin:$PATH"
+
 	run prototypical base 'project'
 	[[ $status = 0 ]]
 	[[ -f "${BATS_TMPDIR}/prototypical/project/LICENSE" ]]
+
+	run prototypical --help
+	[[ $status = 0 ]]
+	[[ $output = *'A starting point for a project'* ]]
 }
