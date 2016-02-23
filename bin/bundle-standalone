@@ -16,6 +16,7 @@ bundle-dependencies
 
 mkdir 'bin'
 echo "PKGINFO $PKGNAME $PKGVER"
+tree packages
 for bin in $(ls "packages/${PKGNAME}-${PKGVER}/bin/"*)
 do
 	ln -s "../$bin" 'bin'
