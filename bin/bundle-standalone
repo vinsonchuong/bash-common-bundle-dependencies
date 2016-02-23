@@ -4,7 +4,7 @@ set -o nounset
 # set -o xtrace
 set -o pipefail
 
-PKGNAME=$(basename "$(git remote get-url origin)")
+PKGNAME=$(basename "$(git remote -v | awk '$1 == "origin" {print $2}' | head -1)" '.git')
 PKGVER=$(git tag | sort -V | tail -1 | cut -c 2-)
 
 mkdir 'standalone'
