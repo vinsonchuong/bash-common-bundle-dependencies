@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -o errexit
+set -o nounset
+# set -o xtrace
+set -o pipefail
+
+PKGNAME=$(basename "$(git remote get-url origin)")
+PKGVER=$(git tag | sort -V | tail -1 | cut -c 2-)
+
+mkdir 'standalone'
+cd 'standalone'
+
+echo "depends=('${PKGNAME}')" > 'PKGBUILD'
+
+bundle-dependencies
+
+mkdir 'bin'
+for bin in $(ls "packages/${PKGNAME}-${PKGVER}/bin/"*)
+do
+	ln -s "../$bin" 'bin'
+done
+
+rm 'PKGBUILD'
