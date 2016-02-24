@@ -17,7 +17,12 @@ bundle-dependencies
 mkdir 'bin'
 for bin in $(ls "packages/${PKGNAME}-${PKGVER}/bin/"*)
 do
-	ln -s "../$bin" 'bin'
+	binName=$(basename "$bin")
+	cat <<-BASH > "bin/${binName}"
+	export PATH="\$(dirname "\${BASH_SOURCE[0]}")/../packages/bin:\${PATH}"
+	${binName} "\$@"
+	BASH
+	chmod +x "bin/${binName}"
 done
 
 rm 'PKGBUILD'
