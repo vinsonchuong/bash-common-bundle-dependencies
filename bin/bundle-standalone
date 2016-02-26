@@ -24,12 +24,12 @@ do
 	then
 		realpath() {
 			(
-				cd "$(dirname "$1")"
-				if [[ -L $(basename "$1") ]]
+				cd "\$(dirname "\$1")"
+				if [[ -L \$(basename "\$1") ]]
 				then
-					realpath "$(readlink "$1")"
+					realpath "\$(readlink "\$1")"
 				else
-					echo "$(pwd)/$(basename "$1")"
+					echo "\$(pwd)/\$(basename "\$1")"
 				fi
 			)
 		}
