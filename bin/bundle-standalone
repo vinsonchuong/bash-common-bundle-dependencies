@@ -20,6 +20,13 @@ do
 	binName=$(basename "$bin")
 	cat <<-BASH > "bin/${binName}"
 	export PATH="\$(dirname "\${BASH_SOURCE[0]}")/../packages/bin:\${PATH}"
+	if ! which 'realpath' &> /dev/null
+	then
+		realpath() {
+			(cd "$(dirname "$0")" && pwd)
+		}
+		export -f realpath
+	fi
 	${binName} "\$@"
 	BASH
 	chmod +x "bin/${binName}"
