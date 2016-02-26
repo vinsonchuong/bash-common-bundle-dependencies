@@ -20,9 +20,4 @@ teardown() {
 	run prototypical base 'project'
 	[[ $status = 0 ]]
 	[[ -f "${BATS_TMPDIR}/prototypical/project/LICENSE" ]]
-
-	run prototypical --help
-	echo "$output"
-	[[ $status = 0 ]]
-	[[ $output = *'A starting point for a project'* ]]
 }
